@@ -11,7 +11,7 @@ on:
 permissions:
   contents: read
   id-token: write
-  attestations: write
+  # attestations: write
 
 env:
   IMAGE_NAME: rahulkishorparida/employee-service
@@ -92,10 +92,10 @@ jobs:
           cosign sign --yes ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       # ---------- SLSA Provenance ----------
-      - name: Generate SLSA Provenance
-        if: github.event_name == 'push'
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.IMAGE_NAME }}
-          subject-digest: ${{ steps.build.outputs.digest }}
-          push-to-registry: true
+      # - name: Generate SLSA Provenance
+      #   if: github.event_name == 'push'
+      #   uses: actions/attest-build-provenance@v2
+      #   with:
+      #     subject-name: ${{ env.IMAGE_NAME }}
+      #     subject-digest: ${{ steps.build.outputs.digest }}
+      #     push-to-registry: true
