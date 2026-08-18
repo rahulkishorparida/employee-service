@@ -58,7 +58,7 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:v1
+            ${{ env.IMAGE_NAME }}:v2
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Scan Docker Image with Trivy
@@ -80,6 +80,34 @@ jobs:
           COSIGN_EXPERIMENTAL: "true"
         run: |
           cosign sign --yes ${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Checkout GitOps repo
+        if: github.event_name == 'push'
+        uses: actions/checkout@v4
+        with:
+          repository: rahulkishorparida/employee-service-gitops
+          token: ${{ secrets.GITOPS_TOKEN }}
+          path: employee-service-gitops   
+
+      - name: Update GitOps image tag
+        if: github.event_name == 'push'
+        working-directory: employee-service-gitops
+        run: |
+          sed -i "s/^  tag: .*/  tag: \"${{ github.sha }}\"/" \
+          helm/employee-service/values.yaml 
+
+      - name: Commit & Push Changes
+        if: github.event_name == 'push'
+        working-directory: employee-service-gitops
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add helm/employee-service/values.yaml
+          git commit -m "Update employee-service image to ${{ github.sha }}"
+          git push    
+
+          
 
       # - name: Generate SLSA Provenance
       #   if: github.event_name == 'push'
