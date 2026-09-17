@@ -58,7 +58,7 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:v2
+            ${{ env.IMAGE_NAME }}:v3
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Scan Docker Image with Trivy
@@ -116,3 +116,5 @@ jobs:
       #     subject-name: ${{ env.IMAGE_NAME }}
       #     subject-digest: ${{ steps.build.outputs.digest }}
       #     push-to-registry: true
+
+
