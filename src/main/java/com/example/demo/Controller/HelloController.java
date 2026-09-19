@@ -10,6 +10,12 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String hello() {
-        return " Welcome to your Dashboard!!";
+        return " Welcome to Dashboard!!";
     }
+
+    @GetMapping("/hi")
+    public String hi() {
+        return " Welcome to DevSecOps Dashboard!!";
+    }
+
 }
